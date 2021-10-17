@@ -20,12 +20,14 @@ class ExpandableTextView @JvmOverloads constructor (
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : AppCompatTextView(context, attrs, defStyleAttr), View.OnClickListener, ValueAnimator.AnimatorUpdateListener {
+) : AppCompatTextView(context, attrs, defStyleAttr),
+    View.OnClickListener,
+    ValueAnimator.AnimatorUpdateListener {
 
-    private var originalText: String = ""
-    private lateinit var animator: ValueAnimator
+    private var originalText: CharSequence = ""
     private var isCollapsing = false
     private var isUpdatingCollapsedText = false
+    private lateinit var animator: ValueAnimator
 
     private var attrExpandActionHint: String = ""
     private var attrCollapsedMaxLines = Int.MAX_VALUE
@@ -38,16 +40,16 @@ class ExpandableTextView @JvmOverloads constructor (
             attrAnimationDurationInMillis = getInteger(R.styleable.ExpandableTextView_animationDurationInMillis, 0).toLong()
         }
 
+        originalText = text
         setupView()
         setupAnimator()
-        // TODO: update collapsed text first time
     }
 
     // region override
     override fun setText(text: CharSequence?, type: BufferType?) {
         text?.let {
             if (!isUpdatingCollapsedText) {
-                originalText = it.toString()
+                originalText = it
             }
         }
         isUpdatingCollapsedText = false
@@ -59,13 +61,26 @@ class ExpandableTextView @JvmOverloads constructor (
     }
 
     override fun onAnimationUpdate(animation: ValueAnimator?) {
-        val height = animation?.animatedValue as Int
-        updateHeight(animatedValue = height)
+        val newHeightValue = animation?.animatedValue as? Int ?: height
+        updateHeight(animatedValue = newHeightValue)
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        if (animator.isRunning) return
+
+        println("changed: $changed")
+
+        if (lineCount <= maxLines) {
+            text = originalText
+        } else if (isCollapsed() && !text.contains(attrExpandActionHint)) {
+            post { updateCollapsedText() }
+        }
     }
     // endregion
 
     private fun setupView() {
-        originalText = text.toString()
         maxLines = attrCollapsedMaxLines
         setOnClickListener(this@ExpandableTextView)
     }
@@ -83,7 +98,7 @@ class ExpandableTextView @JvmOverloads constructor (
     private fun animationStarted() {
         if (isCollapsed()) {
             isCollapsing = false
-            super.setText(originalText)
+            text = originalText
             maxLines = Int.MAX_VALUE
         } else {
             isCollapsing = true
@@ -93,7 +108,7 @@ class ExpandableTextView @JvmOverloads constructor (
     private fun animationEnded() {
         if (isExpanded() && isCollapsing) {
             maxLines = attrCollapsedMaxLines
-            updateState()
+            updateCollapsedText()
             isCollapsing = false
         }
 
@@ -135,23 +150,25 @@ class ExpandableTextView @JvmOverloads constructor (
         setLayoutParams(layoutParams)
     }
 
-    private fun updateState() {
+    private fun updateCollapsedText() {
         isUpdatingCollapsedText = true
 
-        val visibleTextEnd = layout.getLineEnd(maxLines - 1)
-        val hintReplaceStart = visibleTextEnd - attrExpandActionHint.length + 1
-        val hintReplaceEnd = visibleTextEnd - 1
+        val visibleTextEnd = layout.getLineVisibleEnd(maxLines - 1)
+        val hintReplaceStart = visibleTextEnd - attrExpandActionHint.length
+
         val styleStart = hintReplaceStart + DEFAULT_ACTION_HINT.length
         val styleEnd = visibleTextEnd + 1
 
+        if (styleEnd > text.length) return
+
         val finalTextWithHint = buildSpannedString {
             append(text)
-            replace(hintReplaceStart, hintReplaceEnd, attrExpandActionHint)
+            replace(hintReplaceStart, visibleTextEnd, attrExpandActionHint)
             setSpan(UnderlineSpan(), styleStart, styleEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(StyleSpan(Typeface.BOLD), styleStart, styleEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
-        super.setText(finalTextWithHint)
+        text = finalTextWithHint
     }
 
     private fun setWrapContent() {
