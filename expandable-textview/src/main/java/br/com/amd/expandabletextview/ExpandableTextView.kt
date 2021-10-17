@@ -70,8 +70,6 @@ class ExpandableTextView @JvmOverloads constructor (
 
         if (animator.isRunning) return
 
-        println("changed: $changed")
-
         if (lineCount <= maxLines) {
             text = originalText
         } else if (isCollapsed() && !text.contains(attrExpandActionHint)) {
@@ -178,7 +176,6 @@ class ExpandableTextView @JvmOverloads constructor (
     }
 
     private companion object {
-        const val DEFAULT_COLLAPSED_MAX_LINES = 2
         const val DEFAULT_ACTION_HINT = "... "
     }
 }
