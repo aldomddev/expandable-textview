@@ -87,7 +87,7 @@ class ExpandableTextView @JvmOverloads constructor (
     }
 
     private fun setupAnimator() {
-        animator = ValueAnimator.ofInt(-1, -1).apply {
+        animator = ValueAnimator.ofInt(0, 0).apply {
             duration = attrAnimationDurationInMillis
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener(this@ExpandableTextView)
