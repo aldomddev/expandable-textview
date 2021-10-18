@@ -69,9 +69,11 @@ class ExpandableTextView @JvmOverloads constructor (
 
         if (animator.isRunning) return
 
-        if (lineCount <= maxLines) {
+        if (lineCount <= attrCollapsedMaxLines) {
             text = originalText
+            isClickable = false
         } else if (isCollapsed() && !text.contains(attrExpandActionHint)) {
+            isClickable = true
             post { updateCollapsedText() }
         }
     }
@@ -139,7 +141,7 @@ class ExpandableTextView @JvmOverloads constructor (
     private fun isExpanded() = !isCollapsed()
 
     private fun isCollapsed(): Boolean {
-        return Int.MAX_VALUE != maxLines
+        return maxLines != Int.MAX_VALUE
     }
 
     private fun updateHeight(animatedValue: Int) {
@@ -155,18 +157,15 @@ class ExpandableTextView @JvmOverloads constructor (
         val hintReplaceStart = visibleTextEnd - attrExpandActionHint.length
 
         val styleStart = hintReplaceStart + DEFAULT_ACTION_HINT.length
-        val styleEnd = visibleTextEnd + 1
 
-        if (styleEnd > text.length) return
-
-        val finalTextWithHint = buildSpannedString {
+        val finalTextWithActionHint = buildSpannedString {
             append(text)
             replace(hintReplaceStart, visibleTextEnd, attrExpandActionHint)
-            setSpan(UnderlineSpan(), styleStart, styleEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(StyleSpan(Typeface.BOLD), styleStart, styleEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(UnderlineSpan(), styleStart, visibleTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(StyleSpan(Typeface.BOLD), styleStart, visibleTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
-        text = finalTextWithHint
+        text = finalTextWithActionHint
     }
 
     private fun setWrapContent() {
