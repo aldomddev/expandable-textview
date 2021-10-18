@@ -13,7 +13,7 @@
         android:padding="16dp"
         android:text="@string/long_text"
         app:expandActionHint ="show more"
-        app:collapsedMaxLines="2"
+        app:collapsedMaxLines="3"
         app:animationDurationInMillis="300"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

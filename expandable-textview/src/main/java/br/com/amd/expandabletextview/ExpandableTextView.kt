@@ -35,25 +35,24 @@ class ExpandableTextView @JvmOverloads constructor (
 
     init {
         context.withStyledAttributes(attrs, R.styleable.ExpandableTextView) {
-            attrExpandActionHint = "$DEFAULT_ACTION_HINT${getString(R.styleable.ExpandableTextView_expandActionHint).orEmpty()}"
+            val expandActionHint = getString(R.styleable.ExpandableTextView_expandActionHint).orEmpty()
+            attrExpandActionHint = "$DEFAULT_ACTION_HINT$expandActionHint"
             attrCollapsedMaxLines = getInteger(R.styleable.ExpandableTextView_collapsedMaxLines, maxLines)
             attrAnimationDurationInMillis = getInteger(R.styleable.ExpandableTextView_animationDurationInMillis, 0).toLong()
         }
 
-        originalText = text
         setupView()
         setupAnimator()
     }
 
     // region override
     override fun setText(text: CharSequence?, type: BufferType?) {
-        text?.let {
-            if (!isUpdatingCollapsedText) {
-                originalText = it
-            }
-        }
-        isUpdatingCollapsedText = false
         super.setText(text, type)
+        if (text != null && !isUpdatingCollapsedText) {
+            originalText = text
+        }
+
+        isUpdatingCollapsedText = false
     }
 
     override fun onClick(v: View?) {
@@ -79,6 +78,7 @@ class ExpandableTextView @JvmOverloads constructor (
     // endregion
 
     private fun setupView() {
+        originalText = text
         maxLines = attrCollapsedMaxLines
         setOnClickListener(this@ExpandableTextView)
     }
