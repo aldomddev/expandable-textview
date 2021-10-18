@@ -48,6 +48,7 @@ class ExpandableTextView @JvmOverloads constructor (
     // region override
     override fun setText(text: CharSequence?, type: BufferType?) {
         super.setText(text, type)
+
         if (text != null && !isUpdatingCollapsedText) {
             originalText = text
         }
@@ -74,7 +75,7 @@ class ExpandableTextView @JvmOverloads constructor (
             isClickable = false
         } else if (isCollapsed() && !text.contains(attrExpandActionHint)) {
             isClickable = true
-            post { updateCollapsedText() }
+            updateCollapsedText()
         }
     }
     // endregion
