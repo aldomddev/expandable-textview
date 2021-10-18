@@ -160,7 +160,7 @@ class ExpandableTextView @JvmOverloads constructor (
 
         val finalTextWithActionHint = buildSpannedString {
             append(text)
-            replace(hintReplaceStart, visibleTextEnd, attrExpandActionHint)
+            replace(hintReplaceStart, visibleTextEnd, "$attrExpandActionHint\n")
             setSpan(UnderlineSpan(), styleStart, visibleTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(StyleSpan(Typeface.BOLD), styleStart, visibleTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
