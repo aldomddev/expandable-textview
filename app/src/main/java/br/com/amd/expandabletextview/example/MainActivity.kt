@@ -19,11 +19,25 @@ class MainActivity : AppCompatActivity() {
     private fun setViewListeners() {
         with(binding) {
             btnSetLongText.setOnClickListener {
-                theText.text = getString(R.string.long_text_1)
+                theText.apply {
+                    setCollapsedMaxLines(lines = 3)
+                    text = getString(R.string.long_text_1)
+                    setAnimationDurationTime(
+                        lifecycleOwner = this@MainActivity,
+                        timeInMillis = 300
+                    )
+                }
             }
 
             btnSetLongestText.setOnClickListener {
-                theText.text = getString(R.string.long_text_2)
+                theText.apply {
+                    setCollapsedMaxLines(lines = 5)
+                    text = getString(R.string.long_text_2)
+                    setAnimationDurationTime(
+                        lifecycleOwner = this@MainActivity,
+                        timeInMillis = 600
+                    )
+                }
             }
 
             btnSetShortText.setOnClickListener {
@@ -31,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             theText.apply {
+                setCollapsedMaxLines(lines = 3)
                 setAnimationDurationTime(
                     lifecycleOwner = this@MainActivity,
                     timeInMillis = 300

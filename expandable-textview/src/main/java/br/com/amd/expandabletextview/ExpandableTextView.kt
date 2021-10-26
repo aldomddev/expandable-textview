@@ -119,7 +119,6 @@ class ExpandableTextView @JvmOverloads constructor (
 
     private fun setupView() {
         originalText = text
-        maxLines = attrCollapsedMaxLines
         setOnClickListener(this@ExpandableTextView)
     }
 
@@ -133,16 +132,18 @@ class ExpandableTextView @JvmOverloads constructor (
         }
     }
 
-    private fun setExpandActionHint(actionHint: String) {
+    fun setExpandActionHint(actionHint: String) {
         attrExpandActionHint = "$DEFAULT_ACTION_HINT$actionHint"
     }
 
-    private fun setCollapsedMaxLines(collapsedMaxLines: Int) {
-        attrCollapsedMaxLines = if (collapsedMaxLines > 0) {
-            collapsedMaxLines
+    fun setCollapsedMaxLines(lines: Int) {
+        attrCollapsedMaxLines = if (lines > 0) {
+            lines
         } else {
             DEFAULT_COLLAPSED_MAX_LINES
         }
+
+        maxLines = attrCollapsedMaxLines
     }
 
     private fun setAnimationDuration(durationInMillis: Long) {
