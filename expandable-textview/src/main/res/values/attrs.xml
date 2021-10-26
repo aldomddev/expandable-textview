@@ -3,6 +3,5 @@
     <declare-styleable name="ExpandableTextView">
         <attr name="expandActionHint" format="string" />
         <attr name="collapsedMaxLines" format="integer" />
-        <attr name="animationDurationInMillis" format="integer" />
     </declare-styleable>
 </resources>
