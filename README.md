@@ -1,9 +1,14 @@
 # expandable-textview
 
-TextView for Android with expand and collapse feature.
+Custom TextView for Android with expand and collapse feature.
 
-- Custom hint is applied if the text is greater than the max lines defined. If no hint text is defined, the default ellipsis is used.
-- Animation time for expand and collapse can be defined. Zero for non animation (default).
+Customizations available:
+
+- Set the max lines to truncate the text - ellipsis added at the end by default.
+    - Custom hint and/or ellipsis is applied if the text is greater than the max lines defined. If no hint text is defined, the default ellipsis is used.
+- Optional action hint string for collapsed state (default style: bold and underlined text).
+- Optional action hint string for collapsed state (custom style).
+
 
 ## Usage
 
