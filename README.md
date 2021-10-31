@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
 ```
 ### Result
 
-https://user-images.githubusercontent.com/47090245/139585547-1907ed60-6069-4126-a697-d13d3beda19b.mp4
+https://user-images.githubusercontent.com/47090245/139590454-9d9d146a-a226-414a-893a-f6b521eae617.mp4
 
 
 - Expand action hint can be set with your custom style
@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity() {
 
 ### Result
 
-https://user-images.githubusercontent.com/47090245/139588697-df1a1f32-2d11-4876-b6bb-2231a44b86bc.mp4
+https://user-images.githubusercontent.com/47090245/139590493-83a872b3-16c7-4f41-a844-a9ee86b5af0d.mp4
+
 
 
