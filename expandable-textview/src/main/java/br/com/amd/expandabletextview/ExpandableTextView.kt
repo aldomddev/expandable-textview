@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Typeface
 import android.text.Spanned
+import android.text.SpannedString
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.AttributeSet
@@ -33,6 +34,7 @@ class ExpandableTextView @JvmOverloads constructor (
     private var originalText: CharSequence = ""
     private var isCollapsing = false
     private var isUpdatingCollapsedText = false
+    private var customExpandActionHint = SpannedString("")
     private lateinit var animator: ValueAnimator
 
     private var attrExpandActionHint: String = ""
@@ -133,7 +135,13 @@ class ExpandableTextView @JvmOverloads constructor (
     }
 
     fun setExpandActionHint(actionHint: String) {
-        attrExpandActionHint = "$DEFAULT_ACTION_HINT$actionHint"
+        customExpandActionHint = SpannedString("")
+        attrExpandActionHint = actionHint
+    }
+
+    fun setExpandActionHint(actionHint: SpannedString) {
+        attrExpandActionHint = ""
+        customExpandActionHint = actionHint
     }
 
     fun setCollapsedMaxLines(lines: Int) {
@@ -213,16 +221,39 @@ class ExpandableTextView @JvmOverloads constructor (
     private fun updateCollapsedText() {
         isUpdatingCollapsedText = true
 
+        if (customExpandActionHint.isNotEmpty()) {
+            updateCollapsedTextWithCustomStyle()
+        } else {
+            updateCollapsedTextWithDefaultStyle()
+        }
+    }
+
+    private fun updateCollapsedTextWithDefaultStyle() {
+        val defaultActionHint = "$DEFAULT_ACTION_HINT$attrExpandActionHint"
+
         val visibleTextEnd = layout.getLineVisibleEnd(maxLines - 1)
-        val hintReplaceStart = visibleTextEnd - attrExpandActionHint.length
+        val hintReplaceStart = visibleTextEnd - defaultActionHint.length
 
         val styleStart = hintReplaceStart + DEFAULT_ACTION_HINT.length
 
         val finalTextWithActionHint = buildSpannedString {
             append(originalText)
-            replace(hintReplaceStart, visibleTextEnd, "$attrExpandActionHint\n")
+            replace(hintReplaceStart, visibleTextEnd, "$defaultActionHint\n")
             setSpan(UnderlineSpan(), styleStart, visibleTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(StyleSpan(Typeface.BOLD), styleStart, visibleTextEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        text = finalTextWithActionHint
+    }
+
+    private fun updateCollapsedTextWithCustomStyle() {
+        val visibleTextEnd = layout.getLineVisibleEnd(maxLines - 1)
+        val hintReplaceStart = visibleTextEnd - (DEFAULT_ACTION_HINT.length + customExpandActionHint.length)
+
+        val finalTextWithActionHint = buildSpannedString {
+            append(originalText)
+            replace(hintReplaceStart, hintReplaceStart + DEFAULT_ACTION_HINT.length, DEFAULT_ACTION_HINT)
+            replace(hintReplaceStart + DEFAULT_ACTION_HINT.length, visibleTextEnd, customExpandActionHint)
         }
 
         text = finalTextWithActionHint
