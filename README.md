@@ -1,10 +1,10 @@
-# expandable-textview
+# Expandable Textview
 
 ![](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![](https://img.shields.io/badge/Kotlin-0095D5?&style=for-the-badge&logo=kotlin&logoColor=white)
 ![GitHub repo size](https://img.shields.io/github/languages/code-size/aldomddev/expandable-textview?style=for-the-badge&logo=github)
 
-Custom TextView for Android with expand and collapse feature.
+Custom TextView for Android with expand and collapse feature. [ValueAnimator](https://developer.android.com/reference/android/animation/ValueAnimator) used to change the high of the widget.
 
 Customizations available:
 
